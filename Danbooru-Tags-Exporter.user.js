@@ -26,6 +26,8 @@
 // @grant        GM.notification
 // @grant        GM.addStyle
 // @license      AGPL-3.0
+// @downloadURL https://update.sleazyfork.org/scripts/484998/Danbooru%20Tags%20Select%20to%20Sort%20and%20Export.user.js
+// @updateURL https://update.sleazyfork.org/scripts/484998/Danbooru%20Tags%20Select%20to%20Sort%20and%20Export.meta.js
 // ==/UserScript==
 
 // Forked from FSpark/Danbooru-Tags-Exporter(https://github.com/FSpark/Danbooru-Tags-Exporter)
@@ -67,6 +69,7 @@
     let selectCopyrightCheck = "";
     let selectCharacterCheck = "";
     let selectSpeciesCheck = "";
+    let selectMetaCheck = "";
     let selectGeneralCheck = "";
 
     if(settings.sort) {
@@ -95,6 +98,9 @@
         }
         if(settings.selections.species) {
             selectSpeciesCheck = "checked";
+        }
+        if(settings.selections.meta) {
+            selectMetaCheck = "checked";
         }
         if(settings.selections.general) {
             selectGeneralCheck = "checked";
@@ -180,6 +186,7 @@
         <span class="inline-checkbox"><input type="checkbox" id="select-artist" ${selectArtistCheck}/><label for="select-artist">Artist</label></span>
         <span class="inline-checkbox"><input type="checkbox" id="select-copyright" ${selectCopyrightCheck}/><label for="select-copyright">Copyright</label></span>
         <span class="inline-checkbox"><input type="checkbox" id="select-character" ${selectCharacterCheck}/><label for="select-character">Character</label></span>
+        <span class="inline-checkbox"><input type="checkbox" id="select-meta" ${selectMetaCheck}/><label for="select-meta">Meta</label></span>
         <span class="inline-checkbox show-e621"><input type="checkbox" id="select-species" ${selectGeneralCheck}/><label for="select-species">Species</label></span>
         <span class="inline-checkbox"><input type="checkbox" id="select-general" ${selectGeneralCheck}/><label for="select-general">General</label></span>
         </div>
@@ -238,7 +245,7 @@
         let round_brackets = document.getElementById("round-brackets").checked
         if(!target) {
             if(sort) {
-                ["[name=character-tags]:checked", "[name=copyright-tags]:checked", "[name=artist-tags]:checked", "[name=species-tags]:checked", "[name=general-tags]:checked"].forEach((t)=>createTags(t));
+                ["[name=character-tags]:checked", "[name=copyright-tags]:checked", "[name=artist-tags]:checked", "[name=species-tags]:checked", "[name=meta-tags]:checked", "[name=general-tags]:checked"].forEach((t)=>createTags(t));
             } else {
                 createTags(`${tagListSelector} input[type='checkbox']:checked`);
             }
@@ -259,7 +266,7 @@
         }
 
         if(sort) {
-            const regexp = /[1-6]\+?(girl|boy)s?/;
+            const regexp = /[1-6]\+?(girl|boy|other)s?/;
             const girlsTags = tags.filter(tag => tag.includes('girl') && regexp.test(tag));
             const boysTags = tags.filter(tag => !tag.includes('girl') && regexp.test(tag));
             const otherTags = tags.filter(tag => !regexp.test(tag));
@@ -358,6 +365,7 @@
                           copyright: document.getElementById("select-copyright").checked,
                           character: document.getElementById("select-character").checked,
                           species: document.getElementById("select-species").checked,
+                          meta: document.getElementById("select-meta").checked,
                           general: document.getElementById("select-general").checked
                          };
         localStorage.setItem("settings", JSON.stringify({sort: sort, bracketEscape: bracketEscape, setWeight: setWeight, useBracket: useBracket, selections: selections}));
@@ -379,6 +387,7 @@
         document.getElementById("select-copyright").checked = initialSettings.selections.copyright;
         document.getElementById("select-character").checked = initialSettings.selections.character;
         document.getElementById("select-species").checked = initialSettings.selections.species;
+        document.getElementById("select-meta").checked = initialSettings.selections.meta;
         document.getElementById("select-general").checked = initialSettings.selections.general;
     }
 
@@ -390,7 +399,7 @@
         }
     }
 
-    ["artist","character","copyright", "species", "general"].forEach((t)=>insertButtons(t))
+    ["artist","character","copyright", "species", "meta", "general"].forEach((t)=>insertButtons(t))
 
     toggleWeightInputs();
 
