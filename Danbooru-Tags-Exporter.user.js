@@ -259,7 +259,7 @@
         }
 
         if(sort) {
-            const regexp = /[1-6]\+?(girl|boy)s?/;
+            const regexp = /[1-6]\+?(girl|boy|other)s?/;
             const girlsTags = tags.filter(tag => tag.includes('girl') && regexp.test(tag));
             const boysTags = tags.filter(tag => !tag.includes('girl') && regexp.test(tag));
             const otherTags = tags.filter(tag => !regexp.test(tag));
